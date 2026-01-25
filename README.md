@@ -84,11 +84,10 @@ Bus_Reservation/
 ```
 
 ## Development Phases
-
-- [x] **Phase 1**: Project configuration (pom.xml & application.properties)
-- [ ] **Phase 2**: Domain layer (Entities & Repositories)
-- [ ] **Phase 3**: Service layer (Business logic)
-- [ ] **Phase 4**: Controller & View layer (Thymeleaf templates)
+**Phase 1**: Project configuration (pom.xml & application.properties)
+**Phase 2**: Domain layer (Entities & Repositories)
+**Phase 3**: Service layer (Business logic)
+**Phase 4**: Controller & View layer (Thymeleaf templates)
 
 ## Features (Planned)
 
@@ -99,5 +98,3 @@ Bus_Reservation/
 - Admin panel for bus management
 
 ---
-
-Built with ❤️ using "Vibe Coding" methodology
