@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Buses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            border: none;
+            border-radius: 8px;
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="bi bi-bus-front-fill"></i> Bus Reservation</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/buses"><i class="bi bi-bus-front"></i> All Buses</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/buses/search"><i class="bi bi-search"></i>
+                            Search</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reservations"><i
+                                class="bi bi-ticket-perforated"></i> Reservations</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="bi bi-bus-front-fill"></i> <span th:text="${pageTitle}">Buses</span></h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="mb-4">
+            <a href="/buses/add" class="btn btn-primary me-2">
+                <i class="bi bi-plus-circle"></i> Add New Bus
+            </a>
+            <a href="/buses/upcoming" class="btn btn-success">
+                <i class="bi bi-clock"></i> Upcoming Buses
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12" th:if="${buses.isEmpty()}">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No buses found.
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4" th:each="bus : ${buses}">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-bus-front"></i> <span th:text="${bus.busNumber}">BUS001</span>
+                        </h5>
+                        <hr>
+                        <p class="mb-2">
+                            <i class="bi bi-geo-alt-fill text-primary"></i>
+                            <strong>Route:</strong> <span th:text="${bus.source + ' → ' + bus.destination}"></span>
+                        </p>
+                        <p class="mb-2">
+                            <i class="bi bi-clock-fill text-info"></i>
+                            <strong>Departure:</strong> <span
+                                th:text="${#temporals.format(bus.departureTime, 'dd MMM yyyy, hh:mm a')}"></span>
+                        </p>
+                        <p class="mb-2">
+                            <i class="bi bi-currency-rupee text-success"></i>
+                            <strong>Price:</strong> ₹<span th:text="${bus.price}">500</span>
+                        </p>
+                        <p class="mb-3">
+                            <i class="bi bi-person-fill text-warning"></i>
+                            <strong>Available Seats:</strong>
+                            <span class="badge bg-success" th:text="${bus.availableSeats}">20</span> /
+                            <span th:text="${bus.totalSeats}">40</span>
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/buses/{id}(id=${bus.id})}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye"></i> View Details
+                            </a>
+                            <a th:href="@{/reservations/book/{id}(id=${bus.id})}" th:if="${bus.hasAvailableSeats()}"
+                                class="btn btn-success btn-sm">
+                                <i class="bi bi-ticket"></i> Book Now
+                            </a>
+                            <button class="btn btn-secondary btn-sm" th:unless="${bus.hasAvailableSeats()}" disabled>
+                                <i class="bi bi-x-circle"></i> Fully Booked
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
